@@ -4,3 +4,6 @@
 # User-specific configuration overrides
 .bashrc.d/config.conf
 EOF
+
+# Python virtual environment
+.venv/
