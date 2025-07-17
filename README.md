@@ -1,24 +1,33 @@
-# Modular Bash Services
+# Unified Development Environment
 
-This repository contains a powerful, modular, and service-oriented bash environment. It replaces a single, monolithic `.bashrc` file with a collection of independent "services" that are easy to manage, configure, and extend.
+This repository contains a complete, version-controlled development environment. It goes beyond a typical shell setup, integrating a modular, service-oriented bash framework with a modern Neovim configuration and a suite of custom command-line tools.
 
 ***
 
 ## ✨ Features
 
-* **Fast, Two-Line Prompt**: A clean and informative prompt shows your virtual environment, Git status, user, host, and current path.
-* **Intelligent Git Integration**:
-    * Provides a rich set of common Git aliases (`gst`, `gco`, `gl`, etc.).
-    * Displays a detailed Git status in the prompt, including branch, ahead/behind count, modified files, untracked files, and stashed items.
-* **Automatic Python Venv Management**:
-    * Automatically detects and activates a `.venv` in your project's directory tree.
-    * Automatically deactivates the virtual environment when you navigate away.
-    * Includes a simple `venv-create` command to quickly set up a new environment.
-* **Live Configuration Reloading**: Automatically reloads your shell's configuration when you save changes to any of the service files, using either an efficient `inotify` daemon or a timestamp-based check.
-* **Helpful Utilities**:
-    * A collection of useful aliases for navigation (`ll`, `..`, `...`) and system operations (`update`, `psg`).
-    * Powerful shell functions like `extract` for any archive type and `mkcd` to create and enter a directory in one step.
-* **Centralized Configuration**: All settings are managed in one place with sensible defaults, which you can easily override.
+* **Modular Bash Services**: Replaces a monolithic `.bashrc` with independent services for aliases, functions, environment variables, and more, making the setup easy to manage and extend.
+* **Integrated Neovim Experience**:
+    * A complete, modern Neovim configuration managed by `packer.nvim` is included and installed automatically.
+    * Comes pre-configured with the popular `gruvbox` theme.
+    * Features the powerful `telescope.nvim` fuzzy finder for lightning-fast file navigation and text searching.
+* **Custom Command-Line Tools**:
+    * A collection of powerful Python helper scripts located in the `scripts/` directory.
+    * Includes the `zap <pattern> [dir]` command, a "search and edit" power-tool that seamlessly integrates the shell with Neovim's interactive search.
+    * Provides a full suite of Git management scripts to create, delete, rename, and manage GitHub repositories directly from the command line.
+* **Intelligent Shell Prompt**: A clean and informative two-line prompt that shows your Python virtual environment, detailed Git status, user, host, and current path.
+* **Automatic Venv and Live Reload**: Includes services for automatically activating Python virtual environments and for live-reloading your entire shell configuration whenever you save a change.
+
+***
+
+## 📋 Requirements
+
+Before installation, please ensure you have the following external dependencies installed:
+
+* **Neovim (v0.9+):** A recent version is required for the included Lua plugins to function correctly.
+* **`ripgrep` (`rg`):** A fast command-line search tool used by Telescope for its live grep feature.
+* **Python 3 & Pip:** Required to run the custom scripts.
+* **Git:** For version control and interacting with GitHub.
 
 ***
 
@@ -28,20 +37,25 @@ This repository contains a powerful, modular, and service-oriented bash environm
     ```bash
     git clone [https://github.com/your-username/dotfiles.git](https://github.com/your-username/dotfiles.git) ~/dotfiles
     ```
-2.  **Run the installer:**
-    The installer script will back up any existing configuration files and create symbolic links to the files in this repository.
+2.  **Install Python Dependencies:**
+    The custom scripts require a few Python packages. Install them using the provided `requirements.txt` file.
+    ```bash
+    pip install -r ~/dotfiles/scripts/requirements.txt
+    ```
+3.  **Run the installer:**
+    The installer script will back up any existing configuration files and create symbolic links to the components in this repository.
     ```bash
     cd ~/dotfiles
     ./install.sh
     ```
-3.  **Restart your shell:**
-    Open a new terminal or run `source ~/.bashrc` to activate the new environment.
+4.  **Restart your shell:**
+    Open a new terminal. The first time you run Neovim, it will automatically install its plugins via Packer.
 
 ***
 
 ## 🔧 Configuration
 
-You can easily customize the behavior of the services without modifying the core files.
+You can easily customize the behavior of the bash services without modifying the core files.
 
 1.  **Create an override file**:
     ```bash
@@ -56,37 +70,5 @@ You can easily customize the behavior of the services without modifying the core
 
     # Use the inotify method for faster reloads
     reload_method=inotify
-
-    # Set the cache Time-To-Live (TTL) for the git prompt to 5 seconds
-    git_prompt_cache_ttl=5
     ```
-
 You can find a full list of default settings in `.bashrc.d/10-config.sh`.
-
-***
-
-## 🧩 Adding a New Service
-
-Creating a new service is simple. Here's how to add a "hello world" service:
-
-1.  **Create the file**: `touch ~/.bashrc.d/91-hello.sh`
-2.  **Add the content**:
-
-    ```bash
-    #!/bin/bash
-    # My "Hello World" Service
-
-    # Initialization function
-    hello_init() {
-        echo "Hello from your new service!"
-    }
-
-    # Cleanup function (optional)
-    hello_cleanup() {
-        echo "Goodbye from the hello service."
-    }
-
-    # Register the service with the core system
-    service_register "hello" "hello_init" "hello_cleanup" "utility"
-    ```
-3.  **Reload your shell**, and you will see "Hello from your new service!" printed on startup.
