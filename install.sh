@@ -19,6 +19,7 @@ LINKS=(
     "profile:.profile"
     "bashrc:.bashrc"
     ".bashrc.d:.bashrc.d"
+    "config/nvim:.config/nvim"jk
 )
 
 # --- Main Logic ---
