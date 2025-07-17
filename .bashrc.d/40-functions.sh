@@ -50,6 +50,52 @@ extract() {
     done
 }
 
+# Searches for a pattern in a directory using Neovim and Telescope.
+# Usage: zap <pattern> [directory] [-r]
+#     - <pattern>: The text or regex pattern to search for.
+#     - [directory]: Optional. The directory to search in. Defaults to the current directory.
+#     - [-r]: Optional. Accepted for convenience; search is recursive by default.
+zap() {
+    local pattern=""
+    local directory="."
+    # The -r flag is parsed but doesn't change behaviour, as ripgrep is recursive by default.
+    # This makes the command feel more familiar to users of grep.
+
+    # Robust argument parsing loop.
+    while (( "$#" )); do
+        case "$1" in
+            -r)
+                # This flag is simply consumed.
+                shift
+                ;;
+            -*) # Handle unknown flags
+                echo "Error: Unknown flag $1" >&2
+                echo "Usage: zap <pattern> [directory] [-r]" >&2
+                return 1
+                ;;
+            *)
+                if [[ -z "$pattern" ]]; then
+                    pattern="$1"
+                else
+                    directory="$1"
+                fi
+                shift
+                ;;
+        esac
+    done
+
+    # Ensure a search pattern was provided.
+    if [[ -z "$pattern" ]]; then
+        echo "Usage: zap <pattern> [directory] [-r]" >&2
+        return 1
+    fi
+
+    # Construct and execute the Neovim command.
+    # This launches nvim and immediately runs Telescope's live_grep.
+    nvim --cmd "lua require('telescope.builtin').live_grep({ search_dirs = {'${directory}'}, default_text = '${pattern}' })"
+}
+
+
 # Initialises a git repo, adds all files, and makes the initial commit.
 gstart() {
     # Check if git command is available first.
@@ -95,7 +141,7 @@ functions_service_init() {
 }
 
 functions_service_cleanup() {
-    unset -f mkcd dus extract gstart
+    unset -f mkcd dus extract zap gstart
     log_info "Functions service stopped"
 }
 
@@ -110,4 +156,4 @@ service_register "functions" \
 # ------------------------------------------------------------------------------
 # NAMESPACE PROTECTION
 # ------------------------------------------------------------------------------
-readonly -f mkcd dus extract gstart
+readonly -f mkcd dus extract zap gstart
