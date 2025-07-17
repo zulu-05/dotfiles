@@ -20,6 +20,7 @@ LINKS=(
     "bashrc:.bashrc"
     ".bashrc.d:.bashrc.d"
     "config/nvim:.config/nvim"
+    "scripts:scripts"
 )
 
 # --- Main Logic ---
