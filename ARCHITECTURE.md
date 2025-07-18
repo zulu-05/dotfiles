@@ -53,23 +53,37 @@ The architecture is built upon several key directories, each with a distinct res
     end)
     ```
 
-* **`scripts/`**
-    A collection of custom, executable Python scripts that extend the shell's capabilities with complex tooling (e.g., Git repository management). The installer links this directory to `~/scripts`, which is then added to the system's `$PATH`.
-
-    ```python
-    # From scripts/download_git_repo.py, showing it's a standalone CLI tool:
-    def main():
-        """Parses command-line arguments and initiates the download."""
-        if len(sys.argv) != 2:
-            print(f"Usage: {sys.argv[0]} <repo-name>", file=sys.stderr)
-            sys.exit(1)
-
-        repo_to_download = sys.argv[1]
-        download_repo(repo_to_download)
-
-    if __name__ == "__main__":
-        main()
-    ```
+* **`bin/`**
+    A collection of custom, executable Python tools that extend the shell's capabilities. The installer links this directory to `~/bin` (or a similar location) and ensures it is added to the system's `$PATH`. This directory follows a modern two-layer architecture:
+    1.  **Executables**: The top-level files (e.g., `create_git_repo.py`) are simple entrypoints that parse command-line arguments and call the underlying library.
+    2.  **Library**: All complex logic, error handling, and API interaction is encapsulated within the robust `git_tools` library module, which resides inside this directory. This makes the tools testable, maintainable, and reliable.
+	```python
+    # From bin/create_git_repo.py, showing a thin wrapper:
+    def main() -> None:
+	    # ... argument parsing ...
+	    try:
+		    # Delegate all logic to the library modules.
+		    git_operations.initialize_local_repo(repo_path, repo_name)
+		    github_api.create_github_repo(repo_name)
+		    # ...
+		except GitToolsError as e:
+			# Centralised error handling.
+			print(f"\nError: An operation failed: {e}", file=sys.stderr)
+			sys.exit(1)
+	```
+	
+	```python
+	# From bin/git_tools/github_api.py, showing the underlying library logic:
+	def create_github_repo(repo_name: str) -> None:
+		"""Creates a new public repository on GitHub."""
+		api_url = "https://api.github.com/user/repos"
+		headers = {
+			"Authorization": f"token {GITHUB_TOKEN}",
+			"Accept": "application/vnd.github.v3+json",
+		}
+		data = {"name": repo_name, "private": False}
+		# ... logic to make the request and handle API-specific errors ...
+	```
 
 * **`00-core.sh`**
     The foundational layer of the bash service framework. It provides the service registry, lifecycle functions, logging, and the `PROMPT_COMMAND` hook system. It is the first service sourced.
@@ -128,13 +142,14 @@ service_register "aliases" \
     "aliases_service_init" \
     "aliases_service_cleanup" \
     "utility"
-```
+    ```
 
 ### Hybrid Shell-Editor Integration
 
 This is a powerful pattern that combines the convenience of a shell command with the rich, interactive UI of Neovim.
 
-* **Example (`zap` command):** The `zap` shell function does not perform the search itself. Instead, its sole responsibility is to launch Neovim with a specific startup command that invokes the Telescope plugin.
+- **Example (`zap` command):** The `zap` shell function does not perform the search itself. Instead, its sole responsibility is to launch Neovim with a specific startup command that invokes the Telescope plugin.
+    
 
 ```bash
 # From 40-functions.sh: The shell function acts as a frontend.
@@ -148,13 +163,15 @@ zap() {
 }
 ```
 
-
-* **Benefit:** This approach offloads the complex, interactive work to the tool best suited for it (the editor's UI), while keeping the entrypoint as a simple, memorable command in the shell. It bridges the gap between the terminal and the editor.
+- **Benefit:** This approach offloads the complex, interactive work to the tool best suited for it (the editor's UI), while keeping the entrypoint as a simple, memorable command in the shell. It bridges the gap between the terminal and the editor.
+    
 
 ### Centralised `PROMPT_COMMAND` Hooks
 
 Directly modifying the shell's `PROMPT_COMMAND` variable is fragile and can lead to conflicts. This system avoids this by using a central queue.
+
 1. The core service sets `PROMPT_COMMAND` to a single master function:
+    
 
 ```bash
 # From 00-core.sh
@@ -162,6 +179,7 @@ PROMPT_COMMAND="_run_prompt_hooks"
 ```
 
 2. Other services then register their own functions to be run by this master function.
+    
 
 ```bash
 # From 60-python.sh, registering the venv auto-activation function: 
@@ -174,7 +192,9 @@ python_venv_init() {
 ### Service Decoupling and Communication
 
 Services are designed to be independent but can declare dependencies and communicate through well-defined functions.
+
 1. A service declares its dependencies in the `SERVICE_DEPENDENCIES` array. The core engine ensures dependencies are started first.
+    
 
 ```bash
 # From 70-prompt.sh: The prompt needs config values and git status.
@@ -182,6 +202,7 @@ SERVICE_DEPENDENCIES["prompt"]="config git"
 ```
 
 2. One service can then call a function explicitly provided by another. The `prompt` service doesn't know _how_ to get the Git status; it just asks the `git` service.
+    
 
 ```bash
 # From 70-prompt.sh, inside the prompt-building logic: 

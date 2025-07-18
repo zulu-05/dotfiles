@@ -1,0 +1,9 @@
+# Testing
+pytest
+pytest-mock
+
+# Quality Assurance
+black
+mypy
+flake8
+pre-commit

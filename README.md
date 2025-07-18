@@ -12,7 +12,8 @@ This repository contains a complete, version-controlled development environment.
     * Comes pre-configured with the popular `gruvbox` theme.
     * Features the powerful `telescope.nvim` fuzzy finder for lightning-fast file navigation and text searching.
 * **Custom Command-Line Tools**:
-    * A collection of powerful Python helper scripts located in the `scripts/` directory.
+    * A professional-grade command-line tool suite located in the `bin/` directory.
+    * Built upon a robust, tested, and modular Python library (`git_tools`) for maximum stability and maintainability.
     * Includes the `zap <pattern> [dir]` command, a "search and edit" power-tool that seamlessly integrates the shell with Neovim's interactive search.
     * Provides a full suite of Git management scripts to create, delete, rename, and manage GitHub repositories directly from the command line.
 * **Intelligent Shell Prompt**: A clean and informative two-line prompt that shows your Python virtual environment, detailed Git status, user, host, and current path.
@@ -26,7 +27,7 @@ Before installation, please ensure you have the following external dependencies 
 
 * **Neovim (v0.9+):** A recent version is required for the included Lua plugins to function correctly.
 * **`ripgrep` (`rg`):** A fast command-line search tool used by Telescope for its live grep feature.
-* **Python 3 & Pip:** Required to run the custom scripts.
+* **Python 3 & Pip:** Required to run the custom tools.
 * **Git:** For version control and interacting with GitHub.
 
 ***
@@ -38,10 +39,12 @@ Before installation, please ensure you have the following external dependencies 
     git clone [https://github.com/your-username/dotfiles.git](https://github.com/your-username/dotfiles.git) ~/dotfiles
     ```
 2.  **Install Python Dependencies:**
-    The custom scripts require a few Python packages. Install them using the provided `requirements.txt` file.
+    The custom tools require a few Python packages. Install them using the provided `requirements.txt` file.
     ```bash
-    pip install -r ~/dotfiles/scripts/requirements.txt
+    pip install -r ~/dotfiles/bin/requirements.txt
     ```
+    *(For developers looking to contribute, also install the development dependencies: `pip install -r ~/dotfiles/bin/requirements-dev.txt`)*
+
 3.  **Run the installer:**
     The installer script will back up any existing configuration files and create symbolic links to the components in this repository.
     ```bash
@@ -72,3 +75,4 @@ You can easily customize the behavior of the bash services without modifying the
     reload_method=inotify
     ```
 You can find a full list of default settings in `.bashrc.d/10-config.sh`.
+```
