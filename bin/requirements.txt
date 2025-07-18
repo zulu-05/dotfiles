@@ -1,6 +1,23 @@
+# -----------------------------------------------------------------------------
+# Direct Dependencies
+#
+# These are the packages that our own application code directly imports and uses.
+# -----------------------------------------------------------------------------
+
+# Used by the git_tools library for making calls to the GitHub REST API.
+requests==2.32.4
+
+# Used by the resize_image.py tool for image manipulation.
+pillow==11.3.0
+
+# -----------------------------------------------------------------------------
+# Transitive Dependencies
+#
+# These packages are not used directly by our code, but are required by the
+# direct dependencies listed above (e.g., 'requests' depends on 'urllib3').
+# They are listed here to ensure a fully reproducible environment.
+# -----------------------------------------------------------------------------
 certifi==2025.7.14
 charset-normalizer==3.4.2
 idna==3.10
-pillow==11.3.0
-requests==2.32.4
 urllib3==2.5.0

@@ -1,9 +1,22 @@
-# Testing
-pytest
-pytest-mock
+# Base requirements for the tools to run
+-r requirements.txt
 
+# -----------------------------------------------------------------------------
+# Development & Testing
+# 
+# Pinned versions ensure a consistent and reproducible development environment.
+# -----------------------------------------------------------------------------
+
+# Testing Framework
+pytest==8.4.1
+pytest-mock==3.14.1
+
+# -----------------------------------------------------------------------------
 # Quality Assurance
-black
-mypy
-flake8
-pre-commit
+# 
+# Versions are aligned with the .pre-commit-config.yaml file.
+# -----------------------------------------------------------------------------
+black==25.1.0
+flake8==7.3.0
+mypy==1.17.0
+pre-commit==4.2.0
