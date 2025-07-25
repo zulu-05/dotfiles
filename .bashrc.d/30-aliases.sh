@@ -22,7 +22,7 @@ log_info "Loading aliases service"
 aliases_service_init() {
     # Configuration editing
     alias bashrc='nvim ~/.bashrc'
-    alias bashd='nvim ~/.bashrc.d/'
+    alias bashd='cd ~/.bashrc.d/'
     alias init_lua='nvim ~/.config/nvim/init.lua'
     alias reload='source ~/.bashrc && echo "Configuration reloaded"'
 
@@ -33,15 +33,23 @@ aliases_service_init() {
     alias ln='ln -i'
 
     # Navigation
-    alias ls='ls --color=auto --group-directories-first'
-    alias la='ls -a'
-    alias ll='ls -alFh'
-    alias l='ls -CF'
+    # alias ls='ls --color=auto'
+    # alias ll='ls -alFh'
+    # alias la='ls -A'
+    # alias l='ls -CF'
+
+    # alias ls='ls --color=auto --group-directories-first'
+    # alias la='ls -A'
+    # alias ll='ls -alFh'
+    # alias l='ls -CF'
     alias dus='du -sh * | sort -rh'
     alias tree='tree -C'
     alias ..='cd ..'
     alias ...='cd ../..'
     alias ....='cd ../../..'
+
+    # ...
+    alias listpath="echo $PATH | tr ':' '\n'"
 
     # System operations
     alias update='sudo apt update && sudo apt upgrade -y'
