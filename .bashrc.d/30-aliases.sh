@@ -33,15 +33,11 @@ aliases_service_init() {
     alias ln='ln -i'
 
     # Navigation
-    # alias ls='ls --color=auto'
-    # alias ll='ls -alFh'
-    # alias la='ls -A'
-    # alias l='ls -CF'
+    alias ls='ls --color=auto --group-directories-first'
+    alias la='ls -A --color=auto --group-directories-first'
+    alias ll='ls -alFh'
+    alias l='ls -CF'
 
-    # alias ls='ls --color=auto --group-directories-first'
-    # alias la='ls -A'
-    # alias ll='ls -alFh'
-    # alias l='ls -CF'
     alias dus='du -sh * | sort -rh'
     alias tree='tree -C'
     alias ..='cd ..'
