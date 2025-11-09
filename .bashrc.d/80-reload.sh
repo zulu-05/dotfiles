@@ -130,7 +130,7 @@ auto_reload_init() {
     case "$method" in
         "inotify")
             register_prompt_hook "auto_reload_check_trigger"
-            _auto_reload_start_daemon
+            exec _auto_reload_start_daemon
             ;;
         "timestamp")
             register_prompt_hook "auto_reload_check_timestamp"
@@ -149,12 +149,20 @@ auto_reload_cleanup() {
     log_info "Auto-reload service stopped"
 }
 
-# Register the service as a 'daemon'.
-# The core service manager will handle the PID and kill signal.
+# Determine the service type dynamically based on the configuration.
+# This is crucial because only the 'inotify' method runs a true daemon.
+# The 'timestamp' method is a simple utility that sets up a prompt hook.
+reload_method_for_type_check=$(config_get reload_method "timestamp")
+service_type="utility" # Default to utility
+if [[ "$reload_method_for_type_check" == "inotify" ]]; then
+    service_type="daemon"
+fi
+
+log_debug "Registering auto_reload service as type: $service_type"
 service_register "auto_reload" \
     "auto_reload_init" \
     "auto_reload_cleanup" \
-    "daemon"
+    "$service_type"
 
 SERVICE_DEPENDENCIES["auto_reload"]="config"
 

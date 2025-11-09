@@ -29,6 +29,7 @@ Before installation, please ensure you have the following external dependencies 
 * **`ripgrep` (`rg`):** A fast command-line search tool used by Telescope for its live grep feature.
 * **Python 3 & Pip:** Required to run the custom tools.
 * **Git:** For version control and interacting with GitHub.
+* **`inotify-tools` (Debian/Ubuntu):** Required for the `inotify` live-reload method. (e.g., `sudo apt install inotify-tools`)
 
 ***
 
@@ -53,6 +54,16 @@ Before installation, please ensure you have the following external dependencies 
     ```
 4.  **Restart your shell:**
     Open a new terminal. The first time you run Neovim, it will automatically install its plugins via Packer.
+
+***
+
+## 🐛 Troubleshooting
+
+* **Errors Persist After Changing Files:** If you make a change to a service file but still see old errors when opening a new terminal, a background process from a previous broken session may still be running. This is common in environments like WSL. To perform a full "hard reset," run the following command in a **Windows PowerShell or CMD window**:
+    ```powershell
+    wsl --shutdown
+    ```
+    This will completely stop the WSL virtual machine, ensuring your next terminal starts in a truly clean slate.
 
 ***
 

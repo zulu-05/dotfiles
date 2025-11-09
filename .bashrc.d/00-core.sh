@@ -14,6 +14,10 @@
 #   - Namespace protection for internal functions
 # ==============================================================================
 
+# Prevent the file from being sourced more than once.
+[[ -n "$BASH_SERVICES_CORE_LOADED" ]] && return
+declare -g BASH_SERVICES_CORE_LOADED=1
+
 # Only run in interactive shells
 [[ $- != *i* ]] && return
 

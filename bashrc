@@ -6,6 +6,14 @@
 # scripts located in ~/.bashrc.d/
 # ==============================================================================
 
+# --- Sourcing Guard ---
+# If this file has already been sourced, just stop.
+# This prevents errors when a login shell sources .profile, which then sources .bashrc.
+if [ -n "$BASHRC_SOURCED" ]; then
+    return
+fi
+BASHRC_SOURCED=1
+
 # --- Interactive Shell Guard ---
 # Do not run the rest of this file for non-interactive shells
 case "$-" in

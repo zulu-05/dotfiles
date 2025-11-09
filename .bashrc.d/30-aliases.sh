@@ -38,7 +38,7 @@ aliases_service_init() {
     alias ll='ls -alFh'
     alias l='ls -CF'
 
-    alias dus='du -sh * | sort -rh'
+    # alias dus='du -sh * | sort -rh'
     alias tree='tree -C'
     alias ..='cd ..'
     alias ...='cd ../..'

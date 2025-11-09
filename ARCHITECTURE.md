@@ -122,6 +122,8 @@ The shell is not a single script but a collection of services that register them
 
 A minimal service file has a clear structure: an init function, a cleanup function, and a call to `service_register`.
 
+A key architectural principle is the distinction between service types. A `utility` service is expected to run, perform a one-time setup (like defining aliases), and exit immediately. In constrast, a `daemon` service is expected to launch a persistent, long-running background process. The core service manager (`00-core.sh`) monitors daemons differently, so it is crucial that services are registered with the correct type to prevent false-positive startup errors. The `auto-reload` service is a prime example, as it dynamically registers its type based on its configured method.
+
 ```bash
 # Example of a simple service definition (e.g., in 30-aliases.sh):
 
@@ -215,3 +217,17 @@ _git_component() {
 ```
 
 This allows the implementation of the `git` service's status function to change (e.g., to add more caching or details) without requiring any modifications to the `prompt` service.
+
+### Idempotent Startup and Reloading
+
+A critical requirement for a reloadable shell is **idempotency** – the ability to run the startup logic multiple times without causing errors or side effects. This is challenging because login shells can source `~/.profile` which in turn sources `~/.bashrc`, leading to a double execution on startup.
+
+This system solves this with a sourcing guard at the very top of the main `bashrc` file:
+
+```bash
+# From bashrc:
+if [ -n "$BASHRC_SOURCED" ]; then
+    return
+fi
+BASHRC_SOURCED=1
+```
