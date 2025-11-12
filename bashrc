@@ -57,3 +57,4 @@ unset file
 if declare -f service_start >/dev/null; then
     service_start "startup"
 fi
+export PATH="$HOME/.local/bin:$PATH"
