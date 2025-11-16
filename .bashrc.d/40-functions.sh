@@ -95,7 +95,6 @@ zap() {
     nvim --cmd "lua require('telescope.builtin').live_grep({ search_dirs = {'${directory}'}, default_text = '${pattern}' })"
 }
 
-
 # Initialises a git repo, adds all files, and makes the initial commit.
 gstart() {
     # Check if git command is available first.
@@ -133,6 +132,49 @@ gstart() {
     fi
 }
 
+# Changes the current directory to the root of the current Git repository
+# Usage: cdgr
+cdgr() {
+    # Check if the Git command is available first.
+    if ! command -v git &> /dev/null; then
+        echo "Error: Git command not found. Please install Git." >&2
+        return 1
+    fi
+
+    # Use the reliable 'rev-parse' command to find the top-level directory.
+    local git_root
+    git_root=$(git rev-parse --show-toplevel 2>/dev/null)
+
+    # Check if the command succeeded. If not, we are not in a Git repository.
+    if [[ -z "$git_root" ]]; then
+        echo "Error: Not inside a Git repository." >&2
+        return 1
+    fi
+
+    # Change to the Git root directory.
+    cd "$git_root" || return 1
+}
+
+# Provides an intelligent, filtered 'tree -a' view of the current directory.
+# It hides auto-generated files, caches, and dependency directories.
+# Usage: lsa [directory]
+lsa() {
+    # First, ensure the 'tree' command is available.
+    if ! command -v tree &> /dev/null; then
+        echo "Error: 'tree' command not found. Please install it." >&2
+        echo "On Debian/Ubuntu: sudo apt install tree" >&2
+        return 1
+    fi
+
+    # Define the exclusion pattern. This is the core of the function's intelligence.
+    # Hides the version control internals, virtual environments, caches, and other noise.
+    local exclude_pattern=".git|.venv|__pycache__|packer_compiled.lua|node_modules|target|.DS_Store"
+
+    # Execute tree with the '-a' flag (to see dotfiles) and our ignore pattern.
+    # All arguments passed to 'lsa' (like a directory path) are forwarded to 'tree'.
+    tree -a -I "$exclude_pattern" "$@"
+}
+
 # ------------------------------------------------------------------------------
 # SERVICE INTEGRATION
 # ------------------------------------------------------------------------------
@@ -141,7 +183,7 @@ functions_service_init() {
 }
 
 functions_service_cleanup() {
-    unset -f mkcd dus extract zap gstart
+    unset -f mkcd dus extract zap gstart cdgr lsa
     log_info "Functions service stopped"
 }
 
@@ -156,4 +198,4 @@ service_register "functions" \
 # ------------------------------------------------------------------------------
 # NAMESPACE PROTECTION
 # ------------------------------------------------------------------------------
-readonly -f mkcd dus extract zap gstart
+readonly -f mkcd dus extract zap gstart cdgr lsa
