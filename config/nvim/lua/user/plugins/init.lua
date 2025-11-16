@@ -38,4 +38,59 @@ require("packer").startup(function(use)
             require("user.plugins.config.telescope")
         end
     }
+
+    -- Markdown previewer in local web server
+    use {
+        "iamcco/markdown-preview.nvim",
+        run = "cd app && npm install",
+        ft = { "markdown" }, -- Only load for markdown files
+        config = function()
+            -- You can add configuration here if needed, but defaults are good
+        end
+    }
+
+    -- Terminal-based Markdown previewer
+    use {
+        "ellisonleao/glow.nvim",
+        -- Lazy-load on markdown files
+        ft = { "markdown" },
+        config = function()
+            require("glow").setup({}) -- Empty setup uses good defaults
+        end
+    }
+
+    -- Treesitter for advanced syntax highlighting and parsing
+    use {
+        'nvim-treesitter/nvim-treesitter',
+        run = ':TSUpdate', -- Installs and updates parsers
+        config = function()
+            require('nvim-treesitter.configs').setup({
+                -- A list of parser names, or "all"
+                ensure_installed = { "lua", "vim", "bash", "markdown", "markdown_inline" },
+
+                -- Install parsers synchronously (only applied to `ensure_installed`)
+                sync_install = false,
+
+                -- Automatically install missing parsers when entering buffer
+                auto_install = true,
+
+                highlight = {
+                    enable = true,
+                },
+            })
+        end
+    }
+
+    -- Prettifies markdown files in place
+    use {
+        "lukas-reineke/headlines.nvim",
+        -- Make sure treesitter is loaded first
+        after = "nvim-treesitter",
+        -- Lazy-load on markdown files
+        ft = { "markdown" },
+        config = function()
+            require("headlines").setup()
+        end
+    }
+
 end)
