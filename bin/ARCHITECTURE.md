@@ -17,15 +17,15 @@ This two-layer architecture makes the system highly maintainable, testable, and 
 
 The `git_tools` library is organized into several modules, each with a distinct responsibility:
 
-| Module              | Description                                                              |
-| ------------------- | ------------------------------------------------------------------------ |
-| `github_api.py`     | Handles all REST API communication with GitHub.                          |
-| `git_operations.py` | Manages all local `git` commands via a secure subprocess wrapper.        |
-| `validation.py`     | Provides functions for validating user input (e.g., repo names, URLs).   |
-| `exceptions.py`     | Defines the custom `GitToolsError` hierarchy for standardized error handling. |
-| `config.py`         | Manages the retrieval of secrets (username, token) from `pass`.          |
-| `logging_config.py` | Provides a centralized setup for application logging.                    |
-| `ui.py`             | Contains the presentation logic for the interactive `list_git_repos.py`. |
+| Module              | Description                                                                         |
+| ------------------- | ----------------------------------------------------------------------------------- |
+| `github_api.py`     | Handles all REST API communication with GitHub.                                     |
+| `git_operations.py` | Manages all local `git` commands via a secure subprocess wrapper.                   |
+| `validation.py`     | Provides functions for validating user input (e.g., repo names, URLs).              |
+| `exceptions.py`     | Defines the custom `GitToolsError` hierarchy for standardized error handling.       |
+| `config.py`         | Manages the lazy-loaded, cached retrieval of secrets (username, token) from `pass`. |
+| `logging_config.py` | Provides a centralized setup for application logging.                               |
+| `ui.py`             | Contains the presentation logic for the interactive `list_git_repos.py`.            |
 
 ---
 
@@ -70,6 +70,8 @@ For operations that involve multiple critical steps (like renaming a repository)
 
 The test suite, located in `bin/tests/`, is designed to be fast and reliable. It achieves this by **mocking** all external interactions.
 
-- **Subprocess Calls:** Instead of running real `git` commands, tests use `pytest-mock` to patch `subprocess.run`. This allows us to verify that our functions are _trying_ to call `git` with the correct arguments, and to simulate both success and failure scenarios without touching the filesystem.
+- **Subprocess Calls:** Instead of running real `git` commands, tests use `pytest-mock` to patch `subprocess.run`. This allows us to verify that our functions are __trying__ to call `git` with the correct arguments, and to simulate both success and failure scenarios without touching the filesystem.
   
 - **API Requests:** Instead of making real network calls to GitHub, tests patch `requests.request`. This allows us to simulate various API responses (e.g., success, "not found", "unauthorized") and confirm that our `github_api` module handles each case correctly.
+
+- **Configuration Functions:** To isolate tests from the `pass` password manager, tests patch the functions in `config.py` (e.g., `config.get_github_token`). This allows us to inject fake secrets and test functions that rely on them without needing a real, configured `pass` environment.

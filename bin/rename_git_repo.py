@@ -7,14 +7,13 @@ import sys
 from pathlib import Path
 
 try:
-    from git_tools import git_operations, github_api, validation
-    from git_tools.config import GITHUB_USERNAME
-    from git_tools.exceptions import GitToolsError
+    from git_tools import git_operations, github_api, validation, config
+    from git_tools.exceptions import GitToolsError, ConfigurationError
+
 except ImportError:
     sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
-    from git_tools import git_operations, github_api, validation
-    from git_tools.config import GITHUB_USERNAME
-    from git_tools.exceptions import GitToolsError
+    from git_tools import git_operations, github_api, validation, config
+    from git_tools.exceptions import GitToolsError, ConfigurationError
 
 
 def main() -> None:
@@ -36,10 +35,12 @@ def main() -> None:
     if not validation.validate_repo_name(new_name):
         sys.exit(1)
 
-    owner = GITHUB_USERNAME # Assuming the user is renaming their own repo
     remote_renamed = False
 
     try:
+        # Lazily get the username just before performing operations.
+        owner = config.get_github_username()
+
         # Step 2: Rename repository on GitHub first
         github_api.rename_github_repo(owner, old_name, new_name)
         remote_renamed = True
@@ -50,16 +51,19 @@ def main() -> None:
 
         print(f"\n✅ Successfully renamed '{old_name}' to '{new_name}'.")
 
-    except GitToolsError as e:
+    except (GitToolsError, ConfigurationError) as e:
         print(f"\nError: An operation failed: {e}", file=sys.stderr)
 
         # ROLLBACK LOGIC
         if remote_renamed:
             print(f"Attempting to roll back GitHub rename...")
+
             try:
-                github_api.rename_github_repo(owner, new_name, old_name)
+                owner_for_rollback = config.get_github_username()
+                github_api.rename_github_repo(owner_for_rollback, new_name, old_name)
                 print("Rollback successful. GitHub repo is back to its original name.")
-            except GitToolsError as rollback_e:
+
+            except (GitToolsError, ConfigurationError) as rollback_e:
                 print(
                     "\nCRITICAL ERROR: FAILED TO ROLL BACK GITHUB RENAME.\n"
                     f"The GitHub repository is named '{new_name}', but the local "

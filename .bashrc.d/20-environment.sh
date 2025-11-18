@@ -31,7 +31,7 @@ __path_append() {
 # SECRET MANAGEMENT FUNCTIONS
 # ------------------------------------------------------------------------------
 git_token() {
-    command -v pass >/dev/null && pass show github_token 2>/dev/null
+    command -v pass >/dev/null && pass show git/personal_access_token 2>/dev/null
 }
 
 email_pass() {

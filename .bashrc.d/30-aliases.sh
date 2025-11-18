@@ -69,7 +69,7 @@ aliases_service_init() {
 # ------------------------------------------------------------------------------
 aliases_service_cleanup() {
     # Specifically unalias only the aliases defined by this service for safety.
-    unalias bashrc bashd vimrc reload \
+    unalias bashrc bashd init_lua reload \
             rm cp mv ln \
             ls la ll l dus tree \
             .. ... .... \

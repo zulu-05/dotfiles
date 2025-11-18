@@ -87,7 +87,7 @@ _git_component() {
         git_color=$(_prompt_color git_clean)
     fi
 
-    echo -n " ${git_color}${git_status}${reset}"
+    echo -n " ${git_color}${git_status}$(_prompt_color reset)"
 }
 
 # ------------------------------------------------------------------------------

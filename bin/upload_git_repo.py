@@ -6,16 +6,16 @@ import sys
 from pathlib import Path
 
 try:
-    from git_tools import git_operations, github_api
-    from git_tools.config import GITHUB_USERNAME
-    from git_tools.exceptions import GitToolsError
+    from git_tools import git_operations, github_api, config
+    from git_tools.exceptions import GitToolsError, ConfigurationError
     from git_tools.logging_config import setup_logging
+
 except ImportError:
     sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
-    from git_tools import git_operations, github_api
-    from git_tools.config import GITHUB_USERNAME
-    from git_tools.exceptions import GitToolsError
+    from git_tools import git_operations, github_api, config
+    from git_tools.exceptions import GitToolsError, ConfigurationError
     from git_tools.logging_config import setup_logging
+
 
 def main() -> None:
     """Orchestrates the repository upload process."""
@@ -35,13 +35,14 @@ def main() -> None:
         github_api.create_github_repo(repo_name)
 
         # Step 3: Link local and remote, then push
+        username = config.get_github_username()
         current_branch = git_operations.get_current_branch(repo_path)
-        git_operations.set_remote_origin(repo_path, GITHUB_USERNAME, repo_name)
+        git_operations.set_remote_origin(repo_path, username, repo_name)
         git_operations.push_to_origin(repo_path, current_branch)
 
         print(f"\n✅ Successfully uploaded repository '{repo_name}' to GitHub!")
 
-    except GitToolsError as e:
+    except (GitToolsError, ConfigurationError) as e:
         print(f"\nError: Upload operation failed.\n{e}", file=sys.stderr)
         sys.exit(1)
 

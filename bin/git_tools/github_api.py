@@ -7,8 +7,8 @@ Handles interactions with the GitHub REST API.
 import requests
 from requests.exceptions import RequestException
 
-from .config import GITHUB_TOKEN
-from .exceptions import GitHubAPIError
+from . import config
+from .exceptions import GitHubAPIError, ConfigurationError
 
 
 def _make_api_request(method: str, url: str, **kwargs) -> requests.Response:
@@ -24,18 +24,26 @@ def _make_api_request(method: str, url: str, **kwargs) -> requests.Response:
         The requests.Response object.
 
     Raises:
-        GitHubAPIError: For connection errors or non-2xx status codes.
+        GitHubAPIError: For connection errors, config errors, or non-2xx status codes.
     """
-    headers = {
-        "Authorization": f"token {GITHUB_TOKEN}",
-        "Accept": "application/vnd.github.v3+json",
-    }
     try:
+        # Lazily retrieve the token just before the request is made.
+        token = config.get_github_token()
+        headers = {
+            "Authorization": f"token {token}",
+            "Accept": "application/vnd.github.v3+json",
+        }
         response = requests.request(
             method, url, headers=headers, timeout=15, **kwargs
         )
         response.raise_for_status()
         return response
+
+    except ConfigurationError as e:
+        # Convert a config error into a GitHubAPIError for consistent handling
+        # by the top-level executables
+        raise GitHubAPIError(f"Configuration failed: {e}") from e
+
     except RequestException as e:
         raise GitHubAPIError(f"Failed to connect to GitHub API: {e}") from e
 
