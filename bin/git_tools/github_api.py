@@ -95,3 +95,24 @@ def rename_github_repo(owner: str, old_name: str, new_name: str) -> None:
     data = {"name": new_name}
     _make_api_request("patch", api_url, json=data)
     print(f"Successfully renamed GitHub repo from '{old_name}' to '{new_name}'")
+
+
+def update_repo_visibility(owner: str, repo_name: str, private: bool) -> None:
+    """
+    Updates the visibility of a repository on GitHub.
+
+    Args:
+        owner: The owner of the repository.
+        repo_name: The name of the repository.
+        private: True to make the repository private, False to make it public.
+
+
+    Raises:
+        GitHubAPIError: If the API call fails.
+    """
+    api_url = f"https://api.github.com/repos/{owner}/{repo_name}"
+    data = {"private": private}
+    visibility = "private" if private else "public"
+
+    _make_api_request("patch", api_url, json=data)
+    print(f"Successfully set visibility for '{repo_name}' to {visibility}.")
