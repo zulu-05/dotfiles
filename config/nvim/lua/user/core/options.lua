@@ -28,3 +28,6 @@ opt.hlsearch = false
 -- UI
 opt.termguicolors = true
 opt.scrolloff = 8
+
+-- Handle ambiguous-width characters correctly.
+vim.o.ambiwidth = 'double'

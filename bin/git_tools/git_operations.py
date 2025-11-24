@@ -10,9 +10,10 @@ managing remotes.
 import logging
 import subprocess
 from pathlib import Path
-from typing import List, Optional
+from typing import List, Optional, Tuple
 
 from .exceptions import GitRepositoryError
+from .models import RepoStatus
 
 
 def run_git_command(
@@ -64,4 +65,104 @@ def run_git_command(
         )
         raise GitRepositoryError(error_message) from e
 
-# ... other documented functions would follow ...
+
+def is_git_repository(path: Path) -> bool:
+    """Checks if the given path is the root of a Git repository."""
+    try:
+        # This command succeeds only if ran inside a Git repository.
+        run_git_command(["rev-parse", "--is-inside-work-tree"], cwd=path)
+        return True
+    except GitRepositoryError:
+        return False
+
+
+def get_current_branch(path: Path) -> str:
+    """Gets the current active branch name."""
+    result = run_git_command(["rev-parse", "--abbrev-ref", "HEAD"], cwd=path)
+    return result.stdout.strip()
+
+
+def get_remote_url(path: Path) -> Optional[str]:
+    """Gets the URL for the remote named 'origin', if it exists."""
+    try:
+        result = run_git_command(["config", "--get", "remote.origin.url"], cwd=path)
+        return result.stdout.strip()
+    except GitRepositoryError:
+        # This error occurs if the remote 'origin' does not exist.
+        return None
+
+
+def _get_ahead_behind(cwd: Path) -> Optional[Tuple[int, int]]:
+    """Returns (ahead, behind) counts relative to the upstream branch."""
+    try:
+        # This command gets the tracking branch name (e.g., 'origin/main')
+        upstream = run_git_command(["rev-parse", "--abbrev-ref", "--symbolic-full-name", "@{u}"],
+                                   cwd=cwd).stdout.strip()
+        if not upstream:
+            return None
+
+        # Get the ahead/behind counts
+        output = run_git_command(["rev-list", "--left-right", "--count", f"{upstream}...HEAD"],
+                                 cwd=cwd).stdout.strip()
+        behind, ahead = map(int, output.split())
+        return ahead, behind
+    except GitRepositoryError as e:
+        # This typically happens if the upstream branch is not configured
+        if "no upstream configured" in e.args[0] or "unknown revision" in e.args[0]:
+            return None
+        raise
+
+
+def _get_messy_status(cwd: Path) -> Tuple[bool, int, int]:
+    """Returns (is_messy, modified_count, untracked_count)."""
+    output = run_git_command(["status", "--porcelain"], cwd=cwd).stdout
+    lines = output.strip().splitlines()
+
+    if not lines:
+        return False, 0, 0
+
+    modified_count = 0
+    untracked_count = 0
+    for line in lines:
+        if line.startswith("??"):
+            untracked_count += 1
+        else:
+            modified_count += 1
+
+    return True, modified_count, untracked_count
+
+
+def get_repo_status(repo_path: Path) -> RepoStatus:
+    """
+    Fetches the complete status of a Git repository by comparing its local state
+    with its remote.
+
+    Args:
+        repo_path: The path to the Git repository.
+
+    Returns:
+        A RepoStatus object containing the detailed status.
+    """
+    if not is_git_repository(repo_path):
+        return RepoStatus(is_repo=False)
+
+    status = RepoStatus(is_repo=True)
+
+    # Fetch latest changes from the remote without merging
+    print("Fetching from remote...")
+    run_git_command(["fetch"], cwd=repo_path)
+
+    status.current_branch = get_current_branch(repo_path)
+    status.remote_url = get_remote_url(repo_path)
+
+    ahead_behind = _get_ahead_behind(repo_path)
+    if ahead_behind:
+        status.ahead_count, status.behind_count = ahead_behind
+        status.upstream_branch = run_git_command(
+            ["rev-parse", "--abbrev-ref", "--symbolic-full-name", "@{u}"],
+            cwd=repo_path
+        ).stdout.strip()
+
+    status.is_messy, status.modified_files, status.untracked_files = _get_messy_status(repo_path)
+
+    return status
