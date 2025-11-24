@@ -10,17 +10,19 @@ Each tool is designed as a thin, user-facing wrapper that leverages the robust, 
 
 ## Available Tools
 
-| Tool                  | Description                                            | Usage                                    |
-| --------------------- | ------------------------------------------------------ | ---------------------------------------- |
-| `create_git_repo.py`  | Creates a local repo and a corresponding remote on GitHub. | `create_git_repo.py <repo_name>`         |
-| `delete_git_repo.py`  | Deletes a repo from GitHub and the local system.       | `delete_git_repo.py <repo_dir_name>`     |
-| `rename_git_repo.py`  | Renames a repo on GitHub and locally.                  | `rename_git_repo.py <old_name> <new_name>` |
-| `download_git_repo.py`| Clones one of your repos from GitHub via SSH.          | `download_git_repo.py <repo_name>`       |
-| `upload_git_repo.py`  | Uploads a local-only repo to a new GitHub remote.      | `upload_git_repo.py`                     |
-| `list_git_repos.py`   | Interactively lists and inspects your GitHub repos.    | `list_git_repos.py`                      |
-| `find_and_replace.py` | Finds and replaces text within files in a directory.   | `find_and_replace.py <find> <replace> [dir]` |
-| `resize_image.py`     | Resizes one or more image files to a target width.     | `resize_image.py [files...] --width <px>`|
-| `open_web_server.py`  | Starts a simple web server in the current directory.   | `open_web_server.py`                     |
+| Tool                   | Description                                                | Usage                                        |
+| ---------------------- | ---------------------------------------------------------- | -------------------------------------------- |
+| `create_git_repo.py`   | Creates a local repo and a corresponding remote on GitHub. | `create_git_repo.py <repo_name>`             |
+| `delete_git_repo.py`   | Deletes a repo from GitHub and the local system.           | `delete_git_repo.py <repo_dir_name>`         |
+| `rename_git_repo.py`   | Renames a repo on GitHub and locally.                      | `rename_git_repo.py <old_name> <new_name>`   |
+| `download_git_repo.py` | Clones one of your repos from GitHub via SSH.              | `download_git_repo.py <repo_name>`           |
+| `upload_git_repo.py`   | Uploads a local-only repo to a new GitHub remote.          | `upload_git_repo.py`                         |
+| `list_git_repos.py`    | Interactively lists and inspects your GitHub repos.        | `list_git_repos.py`                          |
+| `check_git_repo.py`    | Checks the sync status of a local repo against its remote. | `check_git_repo.py [path]`                   |
+| `show_git_repo.py`     | Sets a GitHub repository's visibility to public.           | `show_git_repo.py <repo_name>`               |
+| `find_and_replace.py`  | Finds and replaces text within files in a directory.       | `find_and_replace.py <find> <replace> [dir]` |
+| `resize_image.py`      | Resizes one or more image files to a target width.         | `resize_image.py [files...] --width <px>`    |
+| `open_web_server.py`   | Starts a simple web server in the current directory.       | `open_web_server.py`                         |
 
 ---
 

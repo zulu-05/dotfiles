@@ -26,6 +26,7 @@ The `git_tools` library is organized into several modules, each with a distinct 
 | `config.py`         | Manages the lazy-loaded, cached retrieval of secrets (username, token) from `pass`. |
 | `logging_config.py` | Provides a centralized setup for application logging.                               |
 | `ui.py`             | Contains the presentation logic for the interactive `list_git_repos.py`.            |
+| `models.py`         | Defines data structures (dataclasses) for the library, like `RepoStatus`.           |
 
 ---
 
