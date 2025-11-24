@@ -20,6 +20,7 @@ Each tool is designed as a thin, user-facing wrapper that leverages the robust, 
 | `list_git_repos.py`    | Interactively lists and inspects your GitHub repos.        | `list_git_repos.py`                          |
 | `check_git_repo.py`    | Checks the sync status of a local repo against its remote. | `check_git_repo.py [path]`                   |
 | `show_git_repo.py`     | Sets a GitHub repository's visibility to public.           | `show_git_repo.py <repo_name>`               |
+| `hide_git_repo.py`     | Sets a GitHub repository's visibility to private.          | `hide_git_repo.py <repo_name>`
 | `find_and_replace.py`  | Finds and replaces text within files in a directory.       | `find_and_replace.py <find> <replace> [dir]` |
 | `resize_image.py`      | Resizes one or more image files to a target width.         | `resize_image.py [files...] --width <px>`    |
 | `open_web_server.py`   | Starts a simple web server in the current directory.       | `open_web_server.py`                         |
