@@ -71,6 +71,28 @@ env_service_init() {
 }
 
 # ------------------------------------------------------------------------------
+# SECTION: CUSTOM BIN DIRECTORY
+# ------------------------------------------------------------------------------
+# Add the user's custom dotfiles/ bin directory to the PATH if it exists
+# and is not already included.
+
+CUSTOM_BIN_DIR="$HOME/dotfiles/bin"
+
+if [ -d "$CUSTOM_BIN_DIR" ]; then
+    # Check if the directory is already in the PATH to avoid duplicates
+    case ":$PATH:" in
+        *:"$CUSTOM_BIN_DIR":*)
+            # Already in PATH, do nothing
+            ;;
+        *)
+            # Not in PATH, prepend it
+            log_info "Adding custom bin directory to PATH"
+            export PATH="$CUSTOM_BIN_DIR:$PATH"
+            ;;
+    esac
+fi
+
+# ------------------------------------------------------------------------------
 # SERVICE CLEANUP
 # ------------------------------------------------------------------------------
 env_service_cleanup() {
