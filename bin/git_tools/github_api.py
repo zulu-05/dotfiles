@@ -116,3 +116,31 @@ def update_repo_visibility(owner: str, repo_name: str, private: bool) -> None:
 
     _make_api_request("patch", api_url, json=data)
     print(f"Successfully set visibility for '{repo_name}' to {visibility}.")
+
+
+def get_all_user_repos() -> list[dict]:
+    """
+    Fetches a list of all repositories for the authenticated user.
+
+    Returns:
+        A list of repository data (dictionaries).
+
+    Raises:
+        GitHubAPIError: If the API call fails.
+    """
+    # The endpoint for listing repositories for the authenticated user.
+    # It automatically handles pagination by fetching all pages.
+    api_url = "https://api.github.com/user/repos"
+
+    repos = []
+
+    # The GitHub API uses pagination. We need to follow the 'next' links
+    # to get all the repositories if the user has more than 30.
+    while api_url:
+        response = _make_api_request("get", api_url, params={"per_page": 100})
+        repos.extend(response.json())
+
+        # Check for the 'next' link in the response headers
+        api_url = response.links.get("next", {}).get("url")
+
+    return repos
