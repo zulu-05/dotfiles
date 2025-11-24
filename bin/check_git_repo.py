@@ -44,7 +44,7 @@ def _print_status(status: RepoStatus):
     elif not status.remote_url:
         summary = f"{Colors.GRAY}- No Remote{Colors.ENDC}"
     else:
-        summary = f"{Colors.GREEN}● Synced{Colors.ENDC}"
+        summary = f"{Colors.GREEN}●Synced{Colors.ENDC}"
 
     print(f"\nStatus: {summary}")
     print("-" * 40)

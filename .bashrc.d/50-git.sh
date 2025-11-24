@@ -69,11 +69,16 @@ git_service_get_status() {
         case "$line" in
             '# branch.head '*)      branch="${line#* }" ;;
             '# branch.ab '*)
-                local ab_stats="${line#* }"
-                ahead="${ab_stats%% *}"
-                behind="${ab_stats##* }"
+                # Specifically remove the known prefix to get only the numbers
+                local stats_only="${line/'# branch.ab '/}"
+                read -r ahead behind <<< "$stats_only"
+
+                # Strip leading + or - signs
                 ahead="${ahead#[+-]}"
                 behind="${behind#[+-]}"
+                # Ensure they are treated as numbers, default to 0 if empty
+                ahead=$((ahead + 0))
+                behind=$((behind + 0))
                 ;;
             '1 '*|'2 '*)            ((modified++)) ;;
             '? '*)                  ((untracked++)) ;;

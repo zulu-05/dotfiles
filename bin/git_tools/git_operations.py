@@ -92,6 +92,38 @@ def get_remote_url(path: Path) -> Optional[str]:
         return None
 
 
+def set_remote_origin(path: Path, username: str, repo_name: str) -> None:
+    """
+    Sets the 'origin' remote for a local Git repository.
+
+    Args:
+        path: The path to the Git repository.
+        username: The GitHub username (owner of the repository).
+        repo_name: The name of the repository.
+
+    Raises:
+        GitRepositoryError: If the Git command fails.
+    """
+    remote_url = f"git@github.com:{username}/{repo_name}.git"
+    run_git_command(["remote", "add", "origin", remote_url], cwd=path)
+    print(f"Set remote 'origin' to {remote_url}")
+
+
+def push_to_origin(path: Path, branch_name: str) -> None:
+    """
+    Pushes the specified branch to the 'origin' remote.
+
+    Args:
+        path: The path to the Git repository.
+        branch_name: The name of the branch to push.
+
+    Raises:
+        GitRepositoryError: If the Git command fails.
+    """
+    run_git_command(["push", "-u", "origin", branch_name], cwd=path)
+    print(f"Pushed branch '{branch_name}' to origin.")
+
+
 def _get_ahead_behind(cwd: Path) -> Optional[Tuple[int, int]]:
     """Returns (ahead, behind) counts relative to the upstream branch."""
     try:
