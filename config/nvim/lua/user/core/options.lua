@@ -31,3 +31,22 @@ opt.scrolloff = 8
 
 -- Handle ambiguous-width characters correctly.
 vim.o.ambiwidth = 'double'
+
+-- ============================================================================
+-- WSL Clipboard
+-- ============================================================================
+-- Force Neovim to use xclip, bypassing the default wl-copy on WSL.
+if vim.fn.has("wsl") == 1 then
+    vim.g.clipboard = {
+        name = "WslClipboard",
+        copy = {
+            ["+"] = "xclip -selection clipboard",
+            ["*"] = "xclip -selection clipboard",
+        },
+        paste = {
+            ["+"] = "xclip -selection clipboard -o",
+            ["*"] = "xclip -selection clipboard -o",
+        },
+        cache_enabled = 0,
+    }
+end
