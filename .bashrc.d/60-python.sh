@@ -172,5 +172,5 @@ SERVICE_DEPENDENCIES["python_venv"]="config"
 # ------------------------------------------------------------------------------
 # SECTION 6: NAMESPACE PROTECTION
 # ------------------------------------------------------------------------------
-readonly -f find_venv_cached __auto_activate_venv create_py_venv
+readonly -f find_venv_cached __auto_activate_venv
 readonly -f python_venv_init python_venv_cleanup
