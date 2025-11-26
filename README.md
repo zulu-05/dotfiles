@@ -16,6 +16,7 @@ This repository contains a complete, version-controlled development environment.
     * Built upon a robust, tested, and modular Python library (`git_tools`) for maximum stability and maintainability.
     * Includes the `zap <pattern> [dir]` command, a "search and edit" power-tool that seamlessly integrates the shell with Neovim's interactive search.
     * Provides a full suite of Git management scripts to create, delete, rename, and manage GitHub repositories directly from the command line.
+    * Provides `mkvenv` and `rmvenv` commands for safe, fast, and best-practice management of Python virtual environments.
 * **Intelligent Shell Prompt**: A clean and informative two-line prompt that shows your Python virtual environment, detailed Git status, user, host, and current path.
 * **Automatic Venv and Live Reload**: Includes services for automatically activating Python virtual environments and for live-reloading your entire shell configuration whenever you save a change.
 

@@ -166,7 +166,28 @@ zap() {
 ```
 
 - **Benefit:** This approach offloads the complex, interactive work to the tool best suited for it (the editor's UI), while keeping the entrypoint as a simple, memorable command in the shell. It bridges the gap between the terminal and the editor.
-    
+
+### Hybrid Shell-Python Integration
+
+This pattern combines the robustness and power of Python for complex logic with the unique environment-manipulating capabilities of the shell.
+
+- **The "Engine" (Python):** A standalone, executable Python script in `bin/` handles all the complex work: argument parsing, user interaction, error handling, and providing rich, coloured feedback.
+- **The "UI" (Shell Function):** A simple shell function in a `.bashrc.d/` service acts as the user-facing command. Its only jobs are to call the Python "engine" and then perform any tasks that *only* the shell can do, like `source`ing a file to activate a virtual environment.
+
+```bash
+# From 60-python.sh: The shell function is a thin wrapper.
+mkvenv() {
+    # 1. Delegate all complex logic to the robust Python script.
+    mkvenv.py "$@"
+
+    # 2. If the script succeeded, perform the shell-only action.
+    if [ $? -eq 0 ] && [ -f ".venv/bin/activate" ]; then
+        source ".venv/bin/activate"
+    fi
+}
+```
+
+- **Benefit:** This approach provides the best of both worlds. The logic is maintainable, testable, and powerful (Python), while the user experience is seamless and integrated (Shell).
 
 ### Centralised `PROMPT_COMMAND` Hooks
 

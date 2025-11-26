@@ -15,6 +15,7 @@ This directory contains the complete, modular configuration for Neovim, built wi
     *   **Terminal Preview**: Fast, beautiful in-editor preview for quick reading (`:Glow`).
     *   **Aesthetic Writing**: In-place syntax concealing makes writing Markdown a pleasure (`headlines.nvim`).
 *   **Theming**: Comes with the popular `gruvbox` colorscheme.
+*   **Intelligent, Context-Aware Indentation**: Replaces naive pattern-matching with Treesitter's robust parsing for highly accurate indentation across all supported languages.
 
 ***
 
@@ -27,6 +28,7 @@ For all features to work correctly, the following external dependencies must be 
 *   **`ripgrep` (`rg`):** A fast search tool required by Telescope for `live_grep`.
 *   **`nodejs` & `npm`:** Required by `markdown-preview.nvim`.
 *   **`glow`:** The command-line tool used by `glow.nvim`.
+*   **`tree-sitter-cli`:** Required to compile parsers for languages like Swift and LaTeX from source.
 
 ***
 
