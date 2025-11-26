@@ -104,35 +104,39 @@ __auto_activate_venv() {
 # ------------------------------------------------------------------------------
 # SECTION 3: VENV CREATION & MANAGEMENT
 # ------------------------------------------------------------------------------
-create_py_venv() {
-    # Validate Python installation
-    if ! command -v python3 &>/dev/null; then
-        log_error "Python3 not found in PATH. Cannot create virtual environment."
-        return 1
-    fi
+# Creates a new virtual environment and activates it immediately.
+function mkvenv() {
+    # 1. Delegate all complex logic to the robust Python script.
+    # Pass all arguments ($@) directly to it.
+    mkvenv.py "$@"
 
-    # Check if a venv already exists
-    if [[ -d ".venv" ]]; then
-        read -p "A virtual environment '.venv' already exists. Overwrite? (y/N): " response
-        [[ ! "${response,,}" =~ ^(y|yes)$ ]] && return 1
-        log_info "Removing existing .venv directory."
-        rm -rf .venv
-    fi
-
-    local env_name="${1:-$(basename "$PWD")}"
-    log_info "Creating Python venv '.venv' with prompt '$env_name'"
-
-    if python3 -m venv --prompt "$env_name" .venv; then
-        # Invalidate cache for current directory to force re-detection
+    # 2. If the script succeeded (exit code 0), perform the shell-only actions.
+    if [ $? -eq 0 ] && [ -f ".venv/bin/activate" ]; then
+        # Invalidate the cache for the current directory to force re-direction.
         unset 'VENV_CACHE[$PWD]'
-        # Activate the new environment
-        source .venv/bin/activate
+
+        # Activate the new environment.
+        source ".venv/bin/activate"
         log_info "Virtual environment created and activated."
-        return 0
     else
         log_error "Failed to create virtual environment."
         return 1
     fi
+}
+
+
+# Safely removes the virtual environment in the current directory.
+function rmvenv() {
+    local venv_path="$PWD/.venv"
+
+    # If the venv to be deleted is currently active, deactivate it first.
+    if [[ -n "$VIRTUAL_ENV" && "$VIRTUAL_ENV" == "$venv_path" ]]; then
+        log_info "Deactivating active venv before deletion."
+        deactivate
+    fi
+
+    # Call the robust Python script to handle the validation and deletion.
+    rmvenv.py
 }
 
 # ------------------------------------------------------------------------------
@@ -141,14 +145,13 @@ create_py_venv() {
 python_venv_init() {
     # Hook into the core prompt command system
     register_prompt_hook "__auto_activate_venv"
-    alias venv-create='create_py_venv'
     log_info "Python venv service initialized"
 }
+
 
 python_venv_cleanup() {
     # Remove from the core prompt command system
     unregister_prompt_hook "__auto_activate_venv"
-    unalias venv-create 2>/dev/null
 
     # Clear cache
     VENV_CACHE=()
