@@ -9,7 +9,7 @@ from pathlib import Path
 try:
     from git_tools import git_operations
     from git_tools.exceptions import GitToolsError
-    ffrom git_tools.models import RepoStatus
+    from git_tools.models import RepoStatus
 except ImportError:
     sys.path.insert(0, str(Path(__file__).resolve().parent))
     from git_tools import git_operations
