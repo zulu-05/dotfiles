@@ -1,0 +1,14 @@
+[user]
+	name = zulu-05
+	email = zulumginqi@gmail.com
+[credential]
+	helper = cache
+[filter "lfs"]
+	clean = git-lfs clean -- %f
+	smudge = git-lfs smudge -- %f
+	process = git-lfs filter-process
+	required = true
+[core]
+	editor = nvim
+[init]
+	defaultBranch = main
