@@ -90,7 +90,7 @@ def main() -> None:
         status = git_operations.get_repo_status(repo_path)
         _print_status(status)
     except GitToolsError as e:
-        print(f"\n{Colors.RED}Error: An operation failed:\n{e}{Colors.ENDC}" file=sys.stderr)
+        print(f"\n{Colors.RED}Error: An operation failed:\n{e}{Colors.ENDC}", file=sys.stderr)
         sys.exit(1)
 
 
