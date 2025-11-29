@@ -10,6 +10,12 @@ requests==2.32.4
 # Used by the resize_image.py tool for image manipulation.
 pillow==11.3.0
 
+# 
+rich==
+
+# 
+packaging==
+
 # -----------------------------------------------------------------------------
 # Transitive Dependencies
 #
