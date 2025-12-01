@@ -12,7 +12,7 @@ The primary goal is to replace a monolithic set of configuration files with a sc
 
 ## Core Components
 
-The architecture is built upon several key directories, each with a distinct responsibility. The `install.sh` script uses symbolic links to make these components available to the system from their expected locations.
+The architecture is built upon several key directories, each with a distinct responsibility. The `install.sh` script uses symbolic links to make these components available to the system from their expected locations. This strategy is applied to both entire directories (e.g., linking `config/nvim/` to `~/.config/nvim`) and individual configuration files (e.g., linking `gitconfig` to `~/.gitconfig`), ensuring that all version-controlled files are correctly placed.
 
 * **`~/.bashrc` & `~/.profile`**
     The main entrypoints for an interactive shell session. Their role is minimal: load the modular bash services and then kick off the startup process.

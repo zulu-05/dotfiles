@@ -78,6 +78,12 @@ Unlike typical dotfiles that assume you have software installed, this repository
     ```
     This will completely stop the WSL virtual machine, ensuring your next terminal starts in a truly clean slate.
 
+* **GPG Backup Fails with `Inappropriate ioctl for device`:** When creating an encrypted backup in a minimal terminal (like WSL or SSH), GPG may fail to launch its standard password prompt.
+  * **Solution:** Force GPG to use a simpler, in-line prompt by adding the `--pinentry-mode loopback` flag to the `gpg` command.
+
+* **Git Remote Errors with `Repository not found`:** If a script like `check_git_repo.py` fails because the repository is not found, but `upload_git_repo.py` fails because the remote "already exists," it means your local repository is pointing to a remote URL that does not exist on GitHub.
+  * **Solution:** Correct the URL in your local repository using `git remote set-url origin <correct-ssh-url-from-github>`.   
+
 ***
 
 ## 🔧 Configuration
