@@ -17,6 +17,7 @@ This repository contains a complete, version-controlled development environment.
     * Includes the `zap <pattern> [dir]` command, a "search and edit" power-tool that seamlessly integrates the shell with Neovim's interactive search.
     * Provides a full suite of Git management scripts to create, delete, rename, and manage GitHub repositories directly from the command line.
     * Provides `mkvenv` and `rmvenv` commands for safe, fast, and best-practice management of Python virtual environments.
+    * **System Manager**: A comprehensive Python utility that manages software installation, updates, and documentation across 10+ package managers (APT, Snap, Pip, Cargo, NPM, Gem, Composer, etc.).
 * **Intelligent Shell Prompt**: A clean and informative two-line prompt that shows your Python virtual environment, detailed Git status, user, host, and current path.
 * **Automatic Venv and Live Reload**: Includes services for automatically activating Python virtual environments and for live-reloading your entire shell configuration whenever you save a change.
 
@@ -33,6 +34,17 @@ Before installation, please ensure you have the following external dependencies 
 * **`inotify-tools` (Debian/Ubuntu):** Required for the `inotify` live-reload method. (e.g., `sudo apt install inotify-tools`)
 
 ***
+
+## 📦 Software Provisioning
+
+Unlike typical dotfiles that assume you have software installed, this repository includes a dedicated **Infrastructure as Code** tool (`bin/system_manager.py`) to manage the entire software ecosystem.
+
+* ** Single Source of Truth:** A Python-based registry defines every tool required (APT, Snap, Pip, Cargo, NPM, etc.).
+* **Automated Docs:** The [PROVISIONING.md](PROVISIONING.md) file is auto-generated from this registry, ensuring documentation never drifts from reality.
+* **Health Checks:** Run `system_manager.py status` to see a dashboard of installed tools vs. the latest available versions upstream.
+* **Updates:** Run `system_manager.py update` to selectively upgrade only the tools defined in your environment.
+
+---
 
 ## 🚀 Installation
 
