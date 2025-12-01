@@ -42,19 +42,19 @@ DOCS_PATH = "PROVISIONING.md"
 
 class PackageManager(Protocol):
     def get_installed_version(self, package_name: str, binary_name: str) -> Optional[str]:
-        # ...
+        ...
 
     def get_latest_version(self, package_name: str) -> Optional[str]:
-        # ...
+        ...
 
     def install(self, package_name: str) -> bool:
-        # ...
+        ...
 
 
 # --- Implementations ---
 
 class AptManager:
-    def get_installed_version(self, package_name; str, binary_name: str) -> Optional[str]:
+    def get_installed_version(self, package_name: str, binary_name: str) -> Optional[str]:
         # Check via dpkg first as it's more reliable for exact version
         try:
             res = subprocess.run(
@@ -92,13 +92,13 @@ class SnapManager:
     def get_installed_version(self, package_name: str, binary_name: str) -> Optional[str]:
         try:
             res = subprocess.run(["snap", "list", package_name], capture_output=True, text=True)
-                if res.returncode == 0:
-                    lines = res.stdout.splitlines()
-                    if len(lines) > 1:
-                        # Parse columns. Snap output is fixed width, but split() usually works
-                        parts = lines[1].split()
-                        if len(parts) >= 2:
-                            return parts[1]
+            if res.returncode == 0:
+                lines = res.stdout.splitlines()
+                if len(lines) > 1:
+                    # Parse columns. Snap output is fixed width, but split() usually works
+                    parts = lines[1].split()
+                    if len(parts) >= 2:
+                        return parts[1]
         except FileNotFoundError:
             pass
         return None
@@ -334,7 +334,7 @@ class ComposerManager:
                     # Sort implies relying on version strings (basic sort),
                     # but usually the first one in the structure is most relevant or we rely on 'dist'.
                     # A naive max(stable_versions) works reasonably well for standard semantic versioning
-                    return list(versions.key())[0] # The API usually lists latest first or we pick specifically
+                    return list(versions.keys())[0] # The API usually lists latest first or we pick specifically
                     # For better precision we'd use 'packaging.version.parse', but let's keep it simple:
                     # The Packagist API JSON usually structures keys such that we can iterate.
         except Exception:
@@ -496,7 +496,7 @@ TOOLS = [
     
     # .NET Environment
     # Tool("dotnet-ef", "dotnet", "Entity Framework Core CLI", context="Languages"),
-    # Tool("powershell", "dotnet", "PowerShell Core", binary-"pwsh", context="Core"),
+    # Tool("powershell", "dotnet", "PowerShell Core", binary="pwsh", context="Core"),
 
     # JVM Environment
     # Tool("java", "sdk", "Java JDK", context="Languages"),
