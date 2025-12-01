@@ -109,10 +109,10 @@ class SnapManager:
             if res.returncode == 0:
                 for line in res.stdout.splitlines():
                     if "latest/stable:" in line:
-                    # Line looks like: "latest/stable:  1.2.3   2023-01-01 (123) 50MB -"
-                    parts = line.split()
-                    if len(parts) >= 2:
-                        return parts[1]
+                        # Line looks like: "latest/stable:  1.2.3   2023-01-01 (123) 50MB -"
+                        parts = line.split()
+                        if len(parts) >= 2:
+                            return parts[1]
         except FileNotFoundError:
             pass
         return None
@@ -356,8 +356,8 @@ class DotnetManager:
                 ["dotnet", "tool", "list", "-g"],
                 capture_output=True, text=True
             )
-                if res.returncode == 0:
-                    for line in res.stdout.splitlines():
+            if res.returncode == 0:
+                for line in res.stdout.splitlines():
                     # Output: package.id        1.0.0       commands
                     if line.lower().startswith(package_name.lower()):
                         parts = line.split()
