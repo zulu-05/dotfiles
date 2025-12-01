@@ -8,6 +8,7 @@ of the software ecosystem.
 Usage:
     system_manager.py status
     system_manager.py install [--exclude <tool>...]
+    system_manager.py update [--exclude <tool>...]
     system_manager.py generate-docs
 """
 
@@ -588,6 +589,36 @@ def cmd_install(exclude_list: List[str]):
             console.print(f"[red]Failed to install {tool.name}[/red]")
 
 
+def cmd_update(exclude_list: List[str]):
+    console = Console()
+    to_check = [t for t in TOOLS if t.name not in exclude_list]
+    
+    console.print(f"[bold]Checking for updates {len(to_check)} tools...[/bold]")
+
+    # 1. Check statuses first (to find out what needs updating)
+    with ThreadPoolExecutor(max_workers=10) as executor:
+        results = list(track(executor.map(get_tool_status, to_check), total=len(to_check), description="Scanning..."))
+        
+    updates_needed = [r for r in results if r["raw_status"] == "🔄"]
+
+    if not updates_needed:
+        console.print("[green|All tools are up to date! :tada:[/green]")
+        return
+
+    console.print(f"[bold yellow]Found {len(updates_needed)} updates available.[/bold yellow]")
+    
+    # 2. Perform Updates
+    for item in updates_needed:
+        tool = item["tool"]
+        mgr = MANAGERS.get(tool.manager)
+
+        console.print(f"Updating [bold]{tool.name}[/bold] ({item['current']} -> {item['latest']})...")
+        if mgr.update(tool.name):
+            console.print(f"[green]Successfully updated {tool.name}[/green]")
+        else:
+            console.print(f"[red]Failed to update {tool.name}[/red]")
+
+
 def cmd_generate_docs():
     with open(DOCS_PATH, "w") as f:
         f.write("# System Provisioning & Ecosystem\n\n")
@@ -634,6 +665,8 @@ def main():
         cmd_status()
     elif args.command == "install":
         cmd_install(args.exclude)
+    elif args.command == "update":
+        cmd_update(args.exclude)
     elif args.command == "generate-docs":
         cmd_generate_docs()
     else:
