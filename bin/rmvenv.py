@@ -28,15 +28,12 @@ def main() -> None:
     # Safety check: Confirm this looks like a venv by checking for the Python executable
     python_executable = VENV_DIR / "bin" / "python"
     if not python_executable.exists():
-        print(f"{Colors.RED}Error: Directory './{VENV_DIR}' exists but does not
-              appear to be a valid virtual environment.{Colors.ENDC}", file=sys.stderr)
+        print(f"{Colors.RED}Error: Directory './{VENV_DIR}' exists but does not appear to be a valid virtual environment.{Colors.ENDC}", file=sys.stderr)
         sys.exit(1)
 
     # Confirmation prompt
     try:
-        confirm = input(f"{Colors.YELLOW}Are you sure want to permanently
-                        delete the virtual environment './{VENV_DIR}'? [y/N]: 
-                        {Colors.ENDC}")
+        confirm = input(f"{Colors.YELLOW}Are you sure want to permanently delete the virtual environment './{VENV_DIR}'? [y/N]: {Colors.ENDC}")
         if confirm.lower() != 'y':
             print("Operation cancelled.")
             sys.exit(0)
@@ -51,8 +48,7 @@ def main() -> None:
         print(f"{Colors.GREEN}done{Colors.ENDC}")
     except OSError as e:
         print(f"{Colors.RED}failed{Colors.ENDC}")
-        print(f"\n{Colors.RED}Error: Could not remove directory.\n{e}{Colors.ENDC}", 
-              file=sys.stderr)
+        print(f"\n{Colors.RED}Error: Could not remove directory.\n{e}{Colors.ENDC}", file=sys.stderr)
         sys.exit(1)
 
     print(f"\n{Colors.GREEN}✅ Virtual environment removed successfully!{Colors.ENDC}")
