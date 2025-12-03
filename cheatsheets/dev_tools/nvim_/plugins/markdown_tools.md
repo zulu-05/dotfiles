@@ -38,7 +38,7 @@ Use this for **quick reference**.
 ## 3. Editor Aesthetics (`headlines.nvim`)
 
 This plugin runs automatically in the background. It uses **Treesitter** queries to inject improved styling directly into the code buffer.
-hj
+
 **Features:**
 *   **Header Backgrounds:** Adds coloured background highlights to `# H1`, `## H2`, etc., making document structure visible at a glance.
 *   **Code Blocks:** Adds a slighlty lighter background to code blocks for visual separation.
