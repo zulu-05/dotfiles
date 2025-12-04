@@ -55,8 +55,26 @@ _prompt_color() {
 # ------------------------------------------------------------------------------
 _venv_component() {
     [[ -n "$VIRTUAL_ENV" ]] || return
+
     local venv_name
-    venv_name=$(basename "$VIRTUAL_ENV")
+
+    # Get the environment name
+    if [[ -n "$VIRTUAL_ENV_PROMPT" ]]; then
+        # 1. Use the environment name for the prompt if the current Python installation provides it
+        venv_name="$VIRTUAL_ENV_PROMPT"
+    else
+        # 2. Fallback to folder name
+        venv_name=$(basename "$VIRTUAL_ENV")
+    fi
+
+    # 3. Smart Fallback: If the name is generic ".venv", use the project name (parent dir)
+    if [[ "$venv_name" == ".venv" ]]; then
+        venv_name=$(basename "$dirname "$VIRTUAL_ENV")")
+    fi
+
+    # Strip any existing parentheses to avoid double wrapping
+    venv_name="${venv_name//[()]/}"
+
     echo -n "$(_prompt_color venv)[$venv_name]$(_prompt_color reset) "
 }
 
