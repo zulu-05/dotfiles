@@ -175,7 +175,7 @@ service_register "prompt" \
     "utility"
 
 # Add dependencies on config (for TTLs) and git (for status)
-SERVICE_DEPENDENCIES["prompt"]="config git"
+SERVICE_DEPENDENCIES["prompt"]="config git python_venv"
 
 # ------------------------------------------------------------------------------
 # SECTION 7: NAMESPACE PROTECTION
