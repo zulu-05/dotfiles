@@ -144,7 +144,17 @@ service_register "aliases" \
     "aliases_service_init" \
     "aliases_service_cleanup" \
     "utility"
-    ```
+```
+
+### Prompt Sovereignty
+
+To prevent race conditions between the shell's prompt service and external tools, this system enforces a **Single Source of Truth** for the `PS1` variable.
+
+* **The Problem:** Standard activation scripts (like Python's `activate`) often attempt to modify `PS1` directly by prepending strings like `(venv)`. This conflicts with the custom prompt generator, leading to "ghost" prompts or duplicate info depending on execution order.
+* **The Solution:** We explicitly disable external prompt modifications (e.g., `export VIRTUAL_ENV_DISABLE_PROMPT=1)`.
+* **The Result:** The `70-prompt.sh` service is solely responsible for detecting the environment state (via environment variables or config files) and rendering the prompt. This ensures consistent formatting and ordering.
+
+* **
 
 ### Hybrid Shell-Editor Integration
 

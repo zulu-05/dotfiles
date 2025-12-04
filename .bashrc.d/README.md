@@ -15,7 +15,7 @@ This systems turns a monolithic `.bashrc` into a maintainable, decoupled, and ex
 | **`40-functions.sh`** | Defines useful, complex shell functions and commands. | `zap()`, `mkcd`, `lsa`, `cdgr`, `gstart` | `core` | `None` |
 | **`50-git.sh`** | Provides Git aliases and a status provider for the prompt. | `gst`, `gpl`, `git_service_get_status()` | `core`, `config` | `git_prompt_cache_ttl` |
 | **`60-python.sh`** | Manages Python virtual environments. | `mkvenv`, `rmvenv`, automatic venv activation hook | `core`, `config` | `venv_auto_activate`, `venv_cache_ttl`, `max_path_depth` |
-| **`70-prompt.sh`** | Generates the interactive, two-line shell prompt. | Sets `PS1` using components (venv, git, path) | `core`, `config`, `git` | `prompt_cache_ttl` |
+| **`70-prompt.sh`** | Generates the interactive, two-line shell prompt. | Sets `PS1` using components (venv, git, path) | `core`, `config`, `git`, `python_venv` | `prompt_cache_ttl` |
 | **`80-reload.sh`** | Provides the ability to live-reload the shell config. | `safe_reload()`, `timestamp` & `inotify` methods | `core`, `config` | `reload_method`, `config_dir`, `cache_dir` |
 | **`90-integrations.sh`** | A placehlder for future third-party service integrations. | *(None currently)* | `core` | `None` |
 | **`99-startup.sh`** | The startup coordinator that initialises all services. | The main startup loop that calls `service_start()` on all others. | `core` | `None` |
