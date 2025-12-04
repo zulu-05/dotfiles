@@ -39,7 +39,7 @@ email_pass() {
 }
 
 # ------------------------------------------------------------------------------
-# ENVIRONMENT INITIALIZATION
+# ENVIRONMENT INITIALISATION
 # ------------------------------------------------------------------------------
 env_service_init() {
     # WSL GUI configuration
@@ -66,6 +66,9 @@ env_service_init() {
     export PAGER=less
     export MANPAGER="less -X"
     export FZF_DEFAULT_OPTS="--height 40% --layout=reverse --border"
+
+    # Prevent Python's activate script from modifying the prompt.
+    export VIRTUAL_ENV_DISABLE_PROMPT=1
 
     log_info "Environment service initialized"
 }
